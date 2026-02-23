@@ -23,7 +23,11 @@ async fn main() -> Result<()> {
     let detector = X11Detector::new()?;
     let mapper = StaticMapper::new();
     let mut ai = ai::AiFallback::new(cfg.ai.clone());
-    let discord = discord::DiscordRpc::new(cfg.discord_socket_for_uid(uid));
+    let discord = discord::DiscordRpc::new(
+        cfg.discord_socket_for_uid(uid),
+        cfg.discord_client_id.clone(),
+        std::process::id(),
+    );
 
     let plugins: Vec<Box<dyn Plugin>> = vec![
         Box::new(VsCodePlugin),
@@ -53,7 +57,9 @@ async fn main() -> Result<()> {
         };
 
         if last_status.as_ref() != Some(&status) {
-            let _ = discord.publish(&status).await;
+            if let Err(err) = discord.publish(&status).await {
+                eprintln!("discord publish failed: {err}");
+            }
             last_status = Some(status.clone());
             if history.len() >= 20 {
                 history.pop_front();

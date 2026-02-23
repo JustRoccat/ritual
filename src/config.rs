@@ -11,6 +11,8 @@ pub struct Config {
     pub ai: AiConfig,
     #[serde(default = "default_discord_socket")]
     pub discord_socket: String,
+    #[serde(default = "default_discord_client_id")]
+    pub discord_client_id: String,
 }
 
 #[derive(Debug, Clone, Deserialize)]
@@ -68,6 +70,9 @@ fn default_cache_ttl() -> u64 {
 }
 fn default_discord_socket() -> String {
     "/run/user/{uid}/discord-ipc-0".to_string()
+}
+fn default_discord_client_id() -> String {
+    "YOUR_DISCORD_APP_ID".to_string()
 }
 
 impl Config {
