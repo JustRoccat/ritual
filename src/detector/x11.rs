@@ -33,7 +33,7 @@ impl X11Detector {
         let title = self
             .conn
             .get_property(false, active, window_name_atom, AtomEnum::STRING, 0, 1024)?
-            .and_then(|c| c.reply())
+            .reply()
             .ok()
             .map(|reply| String::from_utf8_lossy(&reply.value).to_string())
             .unwrap_or_else(|| "unknown window".to_string());
