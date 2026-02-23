@@ -1,0 +1,12 @@
+[presence]
+debounce_sec = 3
+
+[ai]
+enabled = true
+provider = "openai"
+api_key = "YOUR_API_KEY_HERE"
+model = "gpt-5-mini"
+endpoint = "https://api.openai.com/v1/chat/completions"
+cache_ttl_sec = 3600
+
+discord_socket = "/run/user/{uid}/discord-ipc-0"
