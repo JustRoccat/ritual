@@ -49,13 +49,14 @@ impl AiFallback {
             ]
         });
 
-        let response = self
-            .http
-            .post(&self.cfg.endpoint)
-            .bearer_auth(&self.cfg.api_key)
-            .json(&payload)
-            .send()
-            .await?;
+        let mut request = self.http.post(&self.cfg.endpoint).json(&payload);
+        request = match self.cfg.provider.as_str() {
+            "openai" | "anthropic" => request.bearer_auth(&self.cfg.api_key),
+            "local" => request,
+            _ => request.bearer_auth(&self.cfg.api_key),
+        };
+
+        let response = request.send().await?;
 
         let value: serde_json::Value = response.json().await?;
         let generated = value["choices"][0]["message"]["content"]

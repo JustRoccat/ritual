@@ -10,7 +10,7 @@ use std::{collections::VecDeque, time::Duration};
 use anyhow::Result;
 use detector::x11::X11Detector;
 use mapper::{StaticMapper, Status};
-use plugins::{steam::SteamPlugin, vscode::VsCodePlugin, Plugin};
+use plugins::{generic::GenericPlugin, steam::SteamPlugin, vscode::VsCodePlugin, Plugin};
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -25,7 +25,11 @@ async fn main() -> Result<()> {
     let mut ai = ai::AiFallback::new(cfg.ai.clone());
     let discord = discord::DiscordRpc::new(cfg.discord_socket_for_uid(uid));
 
-    let plugins: Vec<Box<dyn Plugin>> = vec![Box::new(VsCodePlugin), Box::new(SteamPlugin)];
+    let plugins: Vec<Box<dyn Plugin>> = vec![
+        Box::new(VsCodePlugin),
+        Box::new(SteamPlugin),
+        Box::new(GenericPlugin),
+    ];
 
     let mut last_status: Option<Status> = None;
     let mut history: VecDeque<String> = VecDeque::with_capacity(20);
